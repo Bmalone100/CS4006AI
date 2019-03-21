@@ -1,8 +1,10 @@
 import javax.swing.JOptionPane;
 import java.util.*;
 
-public class ISProject
+public class eightPuzzle
 {
+	static ArrayList<String[][]> open=new ArrayList<String[][]>();
+	static ArrayList<String[][]> closed=new ArrayList<String[][]>();
 	public static void main(String [] args)
 	{   
         String puzzleChoice="";
@@ -10,8 +12,6 @@ public class ISProject
         String StartState="";
         String EndState="";
 		String[] options = {"8 Puzzle", "15 Puzzle"};
-		ArrayList<String[][]> open=new ArrayList<String[][]>();
-		ArrayList<String[][]> closed=new ArrayList<String[][]>();
         puzzleChoice = JOptionPane.showInputDialog(null, "Choose a puzzle", "Menu", 
 		JOptionPane.PLAIN_MESSAGE, null, options, options[0]).toString();
 		if(puzzleChoice==options[0])
@@ -40,7 +40,7 @@ public class ISProject
 	//all valid: return 0, startState invalid: return 1, endState invalid: return 2, both invalid: return 3
 	public static int Validation(String startState, String endState) {	
 		int result=0;
-
+		return result;
 	}
 	//Ronan
 	public static void aStar()
@@ -50,15 +50,16 @@ public class ISProject
 	//Brian
 	public static void gridInit(int size, String inString)
 	{
-        String[][] puzzle = new String[Math.sqrt(size+1)][Math.sqrt(size+1)];
-        String tempStr = "";
+		int sizeSqrt=(int)Math.sqrt(size+1); 
+        String[][] puzzle = new String[sizeSqrt][sizeSqrt];
+        char tempStr;
         for(int i = 0; i < size ; i++)
         {   
-            tempStr = inString[i];
-            for(int j = 0; j<Math.sqrt(size+1)-1 ; j++)
+            tempStr = inString.charAt(i);
+            for(int j = 0; j<sizeSqrt-1 ; j++)
             {
-                for(int k = 0; k < Math.sqrt(size+1)-1; k++)
-                    puzzle[j][k]=tempStr;
+                for(int k = 0; k < sizeSqrt-1; k++)
+                    puzzle[j][k]=""+tempStr;
             }
         }
 	}
@@ -66,7 +67,7 @@ public class ISProject
 
 	//takes the current state as a parameter and checks if it is present in the list of closed states
 	//returns TRUE if a duplicate IS FOUND
-	public static boolean isDuplicate(int[][] currentState) {
+	public static boolean isDuplicate(String[][] currentState) {
 		int dupeCount=0;
 		boolean dupe=false;
 		for(int i=0; i<closed.size() && dupeCount<8; i++) {
