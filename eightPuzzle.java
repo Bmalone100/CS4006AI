@@ -10,6 +10,8 @@ public class ISProject
         String StartState="";
         String EndState="";
 		String[] options = {"8 Puzzle", "15 Puzzle"};
+		ArrayList<String[][]> open=new ArrayList<String[][]>();
+		ArrayList<String[][]> closed=new ArrayList<String[][]>();
         puzzleChoice = JOptionPane.showInputDialog(null, "Choose a puzzle", "Menu", 
 		JOptionPane.PLAIN_MESSAGE, null, options, options[0]).toString();
 		if(puzzleChoice==options[0])
@@ -61,4 +63,22 @@ public class ISProject
         }
 	}
 	//feel free to add methods
+
+	//takes the current state as a parameter and checks if it is present in the list of closed states
+	//returns TRUE if a duplicate IS FOUND
+	public static boolean isDuplicate(int[][] currentState) {
+		int dupeCount=0;
+		boolean dupe=false;
+		for(int i=0; i<closed.size() && dupeCount<8; i++) {
+			dupeCount=0;
+			for (int j=0; j<closed.get(i).length; j++) {
+				for (int k=0; k<closed.get(i).length; k++) {
+					if (closed.get(i)[j][k]==currentState[j][k])
+						dupeCount++;
+				}
+			}
+			if (dupeCount>7) dupe= true;
+		}
+		return dupe;
+	}
 }
