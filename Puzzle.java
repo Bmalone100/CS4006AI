@@ -13,7 +13,6 @@ public class Puzzle {
 
     void menu()
     {
-
         String puzzleChoice="";
         String pattern = "0123456789";
         String startStateIn="";
@@ -90,50 +89,14 @@ class node{
         posy = positionY;
     }
 
-    public int getValue()
-    {
-        return val;
-    }
+    public int getValue() {return val;}
+    public int getPositionX() {return posx;}
+    public int getPositionY() {return posy;}
+    public int getHeursitic() {return posx+posy;}
 
-    public int setValue(int value)
-    {
-        val = value;
-    }
-
-    public int getPositionX()
-    {
-        return posx;
-    }
-
-    public int setPositionX(int position)
-    {
-        posx = position;
-    }
-
-    public int getPositionY()
-    {
-        return posy;
-    }
-
-    public int setPositionY(int position)
-    {
-        posy = position;
-    }
-
-    public boolean isOpen()
-    {
-        return open;
-    }
-
-    public boolean setOpen(boolean isOpen)
-    {
-        open = isOpen;
-    }  
-
-    public int getHeursitic()
-    {
-        return posx+posy;
-    }
+    public int setValue(int value) {val = value;}
+    public int setPositionX(int position) {posx = position;}
+    public int setPositionY(int position) {posy = position;}
 }
 
 class Matrix {
