@@ -111,13 +111,13 @@ class Node{
 }
 
 class Matrix {
-    private int g=0;
-    public 	int size=0;
+    private int g=0; //gn from the brief
+    private int size=0;
     public 	Node nodes[]=new Node[9];
 
     //constructors
     public Matrix(){}
-    public Matrix(int squares) {
+    public Matrix(int squares) { //creates the matrix for an 8 or 15 puzzle
     	nodes=new Node[squares+1];
     	size=squares;
     	//int width=Math.sqrt(squares+1)-1;
@@ -127,7 +127,10 @@ class Matrix {
     }
 
     //getters and setters
-    public int getG() {return g;}
+    //No getter or setter for nodes
+    //just use Mastrix.nodes[], for example startState.nodes[1]
+    public int 	getSize() {return size;}
+    public int 	getG() {return g;}
     public void setG(int in) {g=in;}
 
     //methods
