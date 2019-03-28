@@ -61,23 +61,23 @@ public class Puzzle {
         //Assign Nodes values
         //Compare Start State vs End State 
         //Calculate h value for each node and assign to node
-        for (int i=0;i<currentState.size;i++) {
+        for (int i=0;i<currentState.getSize();i++) {
             totalHeuristic+=Math.abs(currentState.nodes[i].getHeursitic()-endState.nodes[i].getHeursitic());
         }
         return totalHeuristic+currentState.getG();
     }
             /****Iterate through start matrix and output initial puzzle state****/
 
-     void outputstartState(Matrix startState){
-        for(int i = 0; i<startState.size; i++){
+     void outputStartState(Matrix startState){
+        for(int i = 0; i<startState.getSize(); i++){
         System.out.print(startState.nodes[i]);
         if(i==3){System.out.print("\n");}
         if(i==6){System.out.print("\n");}
             }
         }  
              /****Iterate through current instance of matrix and output puzzle state****/
-     void outputstartState(Matrix currentState){
-        for(int i = 0; i<currentState.size; i++){
+     void outputCurrentState(Matrix currentState){
+        for(int i = 0; i<currentState.getSize(); i++){
         System.out.print(currentState.nodes[i]);
         if(i==3){System.out.print("\n");}
         if(i==6){System.out.print("\n");}
