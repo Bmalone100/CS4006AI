@@ -70,7 +70,7 @@ public class Puzzle {
         }
         for (int j=0; j<open.size(); j++) {
         	System.out.println(open.get(j));
-        	System.out.println(calculateHeuristicValue(open.get(j)));
+        	System.out.println(String.format("total heuristic: %d\n\n",calculateHeuristicValue(open.get(j))));
         }
 
     }
@@ -82,15 +82,7 @@ public class Puzzle {
         //Compare Start State vs End State 
         //Calculate h value for each node and assign to node
         for (int i=0;i<in.getSize();i++) {
-        	System.out.println(String.format("%d %d %d %d %d %d",
-        		in.getNode(i).getValue(),
-        		in.getNode(i).getPositionX(),
-        		in.getNode(i).getPositionY(),
-        		endState.getNode(i).getValue(),
-        		endState.getNode(i).getPositionX(),
-        		endState.getNode(i).getPositionY()));
-            totalHeuristic+=Math.abs((in.getNode(i).getPositionX()-endState.getNode(i).getPositionX())+(in.getNode(i).getPositionX()-endState.getNode(i).getPositionY()));
-            System.out.println(String.format("Heuristic for %d is %d",i,Math.abs((in.getNode(i).getPositionX()-endState.getNode(i).getPositionX())+(in.getNode(i).getPositionX()-endState.getNode(i).getPositionY()))));
+            totalHeuristic+=Math.abs(Math.abs(in.getNode(i).getPositionX()-endState.getNode(i).getPositionX())+Math.abs(in.getNode(i).getPositionY()-endState.getNode(i).getPositionY()));
         }
         return totalHeuristic+in.getG();
     }
@@ -209,6 +201,7 @@ class Matrix {
     		if (nodes[i].getValue()==0) {
     			found=true;
     			boolean[] moves=nodes[i].findMoves(puzzleSize);
+    			System.out.println("Possible moves: ");
 				if (moves[0]==true) {
 					System.out.println(nodes[i-1].getValue()+" to the east\n");
 					out[0]=nodes[i-1].getValue();
@@ -233,8 +226,8 @@ class Matrix {
     public static Matrix newMovedMatrix(Matrix old, int in) {
     	int zeroLocation=old.findNode(0);
     	int inLocation=old.findNode(in);
-    	Node tempZero=new Node(0,old.getNode(0).getPositionX(),old.getNode(0).getPositionY());
-    	Node tempIn=new Node(in,old.getNode(in).getPositionX(),old.getNode(in).getPositionY());
+    	Node tempZero=new Node(0,old.getNode(in).getPositionX(),old.getNode(in).getPositionY());
+    	Node tempIn=new Node(in,old.getNode(0).getPositionX(),old.getNode(0).getPositionY());
     	Matrix out=new Matrix(8); //HARDCODED
     	for (int i=0; i<9; i++) {
     		if (i!=zeroLocation && i!=inLocation)
