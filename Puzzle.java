@@ -66,6 +66,23 @@ public class Puzzle {
         }
         return totalHeuristic+currentState.getG();
     }
+            /****Iterate through start matrix and output initial puzzle state****/
+
+     void outputstartState(Matrix startState){
+        for(int i = 0; i<startState.size; i++){
+        System.out.print(startState.nodes[i]);
+        if(i==3){System.out.print("\n");}
+        if(i==6){System.out.print("\n");}
+            }
+        }  
+             /****Iterate through current instance of matrix and output puzzle state****/
+     void outputstartState(Matrix currentState){
+        for(int i = 0; i<currentState.size; i++){
+        System.out.print(currentState.nodes[i]);
+        if(i==3){System.out.print("\n");}
+        if(i==6){System.out.print("\n");}
+            }
+        } 
 
     //takes the current state as a parameter and checks if it is present in the list of closed states
 	//returns TRUE if a duplicate IS FOUND
