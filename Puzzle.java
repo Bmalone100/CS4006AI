@@ -42,18 +42,20 @@ public class Puzzle {
         String startStateIn = "";
         String endStateIn = "";
 
-        startStateIn = JOptionPane.showInputDialog(null, "Input a starting puzzle state");
-        startStateIn+=" ";
-        //call validation here
-        boolean valid;
-        valid = eighPuzzleValidation(startStateIn);
-         endStateIn = JOptionPane.showInputDialog(null, "Input an ending puzzle state");
-         boolean valid2=eighPuzzleValidation(endStateIn);
-         endStateIn+=" ";
-        if(valid&&valid2)
-        {
-          //call validation here
-
+        boolean valid=false;
+        while (!valid) {
+        	startStateIn = JOptionPane.showInputDialog(null, "Input a starting puzzle state");
+        	valid = eighPuzzleValidation(startStateIn);
+        	if (!valid)
+        		JOptionPane.showMessageDialog(null, "ERROR:please input all numbers between 0-8 inclusive \nwithout duplicates");
+        }
+        valid=false;
+        while (!valid) {
+        	endStateIn = JOptionPane.showInputDialog(null, "Input an ending puzzle state");
+        	valid=eighPuzzleValidation(endStateIn);
+        	if (!valid)
+        		JOptionPane.showMessageDialog(null, "ERROR:please input all numbers between 0-8 inclusive \nwithout duplicates");
+        }
         String value [] = startStateIn.split(" ");
         String endValue [] = endStateIn.split(" ");
         int i=0;
@@ -66,55 +68,27 @@ public class Puzzle {
             }
         }
         //this will loop
-            System.out.println(currentState);
-            int[] currentMoves=currentState.findZero(puzzleSize);
-            for (int j=0; j<currentMoves.length; j++) {
-        	if (currentMoves[j]!=0) {
-                    open.add(Matrix.newMovedMatrix(currentState, currentMoves[j]));
-                }
-            }
-            for (int j=0; j<open.size(); j++) {
-                    System.out.println(open.get(j));
-                    System.out.println(String.format("total heuristic: %d\n\n",calculateHeuristicValue(open.get(j))));
+        System.out.println(currentState);
+        int[] currentMoves=currentState.findZero(puzzleSize);
+        for (int j=0; j<currentMoves.length; j++) {
+    	if (currentMoves[j]!=0) {
+                open.add(Matrix.newMovedMatrix(currentState, currentMoves[j]));
             }
         }
-        else{
-                JOptionPane.showMessageDialog(null, "ERROR:please input all numbers between 0-8 inclusive \nwithout Duplicate");
+        for (int j=0; j<open.size(); j++) {
+                System.out.println(open.get(j));
+                System.out.println(String.format("total heuristic: %d\n\n",calculateHeuristicValue(open.get(j))));
         }
-
     }
-    public static boolean eighPuzzleValidation(String startStateIn) {
-       String temp;
-       boolean isValid=false;
-       String tempArray []=startStateIn.split(" ");
-       temp=startStateIn.replaceAll("\\d","").trim();
-        if(temp.length()==0)
-        {
-            isValid=true;
-        }
-        else if(tempArray.length==9)
-        {
-            isValid=true;
-        }
-        
-        for (int i = 0; i < tempArray.length; i++) {
-            if(Integer.parseInt(tempArray[i])<=0 &&  Integer.parseInt(tempArray[i])<=8)
-            {
-                isValid=false;
-            }
-        }
-        for (int i = 0; i < tempArray.length; i++) {
-            for (int j = i+1; j < tempArray.length-1; j++) {
-                if(tempArray[i]==tempArray[j])
-                {
-                    isValid=false;
-                }
-            }
-            
-        }
-        
+    public static boolean eighPuzzleValidation(String in) {
+	    boolean isValid=true;
+		in=in.trim();
+		if (!in.matches("([0-8 ]{17})+"))
+			isValid=false;
+		in=in.replaceAll(" ", "");
+		if (!in.matches("^(?!.*(.).*\\1)\\d{9}"))
+			isValid=false;
         return isValid;
-       
     }
     public static int calculateHeuristicValue(Matrix in)
     {
