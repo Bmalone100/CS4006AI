@@ -67,18 +67,7 @@ public class Puzzle {
                 i++;
             }
         }
-        //this will loop
-        System.out.println(currentState);
-        int[] currentMoves=currentState.findZero(puzzleSize);
-        for (int j=0; j<currentMoves.length; j++) {
-    	if (currentMoves[j]!=0) {
-                open.add(Matrix.newMovedMatrix(currentState, currentMoves[j]));
-            }
-        }
-        for (int j=0; j<open.size(); j++) {
-                System.out.println(open.get(j));
-                System.out.println(String.format("total heuristic: %d\n\n",calculateHeuristicValue(open.get(j))));
-        }
+        aStar();
     }
     public static boolean eighPuzzleValidation(String in) {
 	    boolean isValid=true;
@@ -102,10 +91,87 @@ public class Puzzle {
         return totalHeuristic+in.getG();
     }
 
-    
+    static void aStar() {
+        Scanner scanner=new Scanner(System.in);
+        //find moves for startstate
+        System.out.println(currentState);
+        int[] currentMoves=currentState.findZero(puzzleSize);
+        for (int j=0; j<currentMoves.length; j++) {
+            if (currentMoves[j]!=0) {
+                open.add(Matrix.newMovedMatrix(currentState, currentMoves[j]));
+            }
+        }
+        //add startstate to closed list
+        closed.add(currentState);
+        boolean finished=false;
+        boolean foundInClosed;
+        int min;
+        ArrayList<Matrix> newStates=new ArrayList<Matrix>();
+        int rounds=0;
+        while (!finished) {
+            //System.out.println("#########round "+rounds);
+            //find lowest f value in open
+            min=10000;
+            int remove=0;
+            int j=0;
+            for (; j<open.size(); j++) {
+                // System.out.println("\nopen element: "+j+"\n"+open.get(j)+"g:\t\t"+calculateHeuristicValue(open.get(j)));
+                if (calculateHeuristicValue(open.get(j))<min) {
+                    currentState=open.get(j);
+                    remove=j;
+                    min=calculateHeuristicValue(open.get(j));
+                }
+            }
+            // System.out.println("~~~Removing from open:\n"+open.get(j-1));
+            open.remove(remove);
+            //check if the puzzle is solved
+            if (currentState==endState) {
+                finished=true;
+                System.out.println("done");
+                finished();
+            } else {
+                //find possible moves for current state
+                // System.out.println("Current state:\n"+currentState);
+                currentMoves=currentState.findZero(puzzleSize);
+                for (int k=0; k<currentMoves.length; k++) {
+                    if (currentMoves[k]!=0) {
+                        newStates.add(Matrix.newMovedMatrix(currentState, currentMoves[k]));
+                    }
+                }
+                //check if current state is in closed list
+                //for (int l=0; l<closed.size(); l++)
+                    // System.out.println("closed element: "+l+"\n"+closed.get(l));
+                for (int k=0; k<newStates.size(); k++) {
+                    foundInClosed=false;
+                    for (int l=0; l<closed.size() && !foundInClosed; l++) {
+                        if (newStates.get(k).isEqual(closed.get(l)))
+                            foundInClosed=true;
+                    }
+                    if (!foundInClosed) {
+                        open.add(newStates.get(k));
+                    }
+                }
+                newStates.clear();
+            }
+            closed.add(new Matrix(currentState));
+            rounds++;
+            // String input=scanner.nextLine();
+            // if (input.equals("s"))
+            //     break;
+        }
+    }
 
-    void calculateMovements (Matrix currentState) {
-
+    static void finished() {
+        Matrix check=currentState;
+        ArrayList<Matrix> shortestPath=new ArrayList<Matrix>();
+        while (check!=null) {
+            shortestPath.add(check);
+            check=check.getParent();
+            System.out.println(check);
+        }
+        for (int i=shortestPath.size(); i>=0; i--) {
+            System.out.println(shortestPath.get(i));
+        }
     }
 }
 // ****************************************
@@ -151,6 +217,7 @@ class Node{
 }
 
 class Matrix {
+    Matrix parent;
     private int g=0; //gn from the brief
     private int size=0;
     private int width=0;
@@ -158,16 +225,27 @@ class Matrix {
     //constructors
     public Matrix(){}
     public Matrix(int squares) { //creates the matrix for an 8 or 15 puzzle
-    	nodes=new Node[squares+1];
-    	size=squares+1;
-    	width=(int)Math.sqrt(squares+1);
+        size=squares+1;
+    	nodes=new Node[size];
+    	width=(int)Math.sqrt(size);
     }
-
+    public Matrix(Matrix in) {
+        nodes=new Node[in.nodes.length];
+        for (int i=0; i<nodes.length; i++) {
+            this.nodes[i]=new Node(in.nodes[i].getValue(),in.nodes[i].getPositionX(),in.nodes[i].getPositionY());
+        }
+        size=in.getSize();
+        width=in.getWidth();
+        g=in.getG();
+    }
     //getters and setters
     //No getter or setter for nodes
     //just use Mastrix.nodes[], for example startState.nodes[1]
     public int 	getSize() {return size;}
     public int 	getG() {return g;}
+    public int  getWidth() {return width;}
+    public Matrix getParent() {return parent;}
+    public void setParent(Matrix in) {parent=in;}
     public Node getNode(int in) {
     	boolean found=false;
     	for(int i=0; i<size && !found; i++) {
@@ -211,6 +289,10 @@ class Matrix {
     	}
     	return out;
     }
+
+    //Takes an argument of 8 or 15
+    //Returns an array of numbers that can move into 0
+    //The array is arranged like so: [left of 0, above 0, right of 0, under 0]
     public int[] findZero(int puzzleSize) {
     	boolean found=false;
     	int[] out=new int[4];
@@ -218,22 +300,22 @@ class Matrix {
     		if (nodes[i].getValue()==0) {
     			found=true;
     			boolean[] moves=nodes[i].findMoves(puzzleSize);
-    			System.out.println("Possible moves: ");
+    			//System.out.println("Possible moves: ");
 				if (moves[0]==true) {
-					System.out.println(nodes[i-1].getValue()+" to the east\n");
+					// System.out.println(nodes[i-1].getValue()+" to the east");
 					out[0]=nodes[i-1].getValue();
 				}
 				if (moves[1]==true) {
-					System.out.println(nodes[i-width].getValue()+" to the south\n");
+					// System.out.println(nodes[i-width].getValue()+" to the south");
 					out[1]=nodes[i-width].getValue();
 				}
 
 				if (moves[2]==true) {
-					System.out.println(nodes[i+1].getValue()+" to the west\n");
+					// System.out.println(nodes[i+1].getValue()+" to the west");
 					out[2]=nodes[i+1].getValue();
 				}
 				if (moves[3]==true) {
-					System.out.println(nodes[i+width].getValue()+" to the north\n");
+					// System.out.println(nodes[i+width].getValue()+" to the north");
 					out[3]=nodes[i+width].getValue();
 				}
     		}
@@ -245,8 +327,9 @@ class Matrix {
     	int inLocation=old.findNode(in);
     	Node tempZero=new Node(0,old.getNode(in).getPositionX(),old.getNode(in).getPositionY());
     	Node tempIn=new Node(in,old.getNode(0).getPositionX(),old.getNode(0).getPositionY());
-    	Matrix out=new Matrix(8); //HARDCODED
-    	for (int i=0; i<9; i++) {
+    	Matrix out=new Matrix(old.getSize()-1); //HARDCODED
+        out.setParent(old);
+    	for (int i=0; i<old.getSize(); i++) {
     		if (i!=zeroLocation && i!=inLocation)
     			out.nodes[i]=new Node(old.nodes[i].getValue(), old.nodes[i].getPositionX(), old.nodes[i].getPositionY());
     		else if (i==zeroLocation)
@@ -254,6 +337,7 @@ class Matrix {
     		else
     			out.nodes[i]=tempZero;
     	}
+        out.plusG();
     	return out;
     }
 }
