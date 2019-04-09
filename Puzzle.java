@@ -92,9 +92,7 @@ public class Puzzle {
     }
 
     static void aStar() {
-        Scanner scanner=new Scanner(System.in);
         //find moves for startstate
-        System.out.println(currentState);
         int[] currentMoves=currentState.findZero(puzzleSize);
         for (int j=0; j<currentMoves.length; j++) {
             if (currentMoves[j]!=0) {
@@ -107,31 +105,28 @@ public class Puzzle {
         boolean foundInClosed;
         int min;
         ArrayList<Matrix> newStates=new ArrayList<Matrix>();
-        int rounds=0;
-        while (!finished) {
-            //System.out.println("#########round "+rounds);
+        int numberOfMoves=0;
+        int previousNumMoves=0;
+        while (!finished && numberOfMoves<33) {
             //find lowest f value in open
             min=10000;
             int remove=0;
             int j=0;
             for (; j<open.size(); j++) {
-                // System.out.println("\nopen element: "+j+"\n"+open.get(j)+"g:\t\t"+calculateHeuristicValue(open.get(j)));
                 if (calculateHeuristicValue(open.get(j))<min) {
                     currentState=open.get(j);
                     remove=j;
                     min=calculateHeuristicValue(open.get(j));
                 }
             }
-            // System.out.println("~~~Removing from open:\n"+open.get(j-1));
             open.remove(remove);
             //check if the puzzle is solved
-            if (currentState==endState) {
+            if (currentState.isEqual(endState)) {
                 finished=true;
-                System.out.println("done");
+                System.out.printf("done after %d moves.\nStart state:\n", numberOfMoves+1);
                 finished();
             } else {
                 //find possible moves for current state
-                // System.out.println("Current state:\n"+currentState);
                 currentMoves=currentState.findZero(puzzleSize);
                 for (int k=0; k<currentMoves.length; k++) {
                     if (currentMoves[k]!=0) {
@@ -139,13 +134,12 @@ public class Puzzle {
                     }
                 }
                 //check if current state is in closed list
-                //for (int l=0; l<closed.size(); l++)
-                    // System.out.println("closed element: "+l+"\n"+closed.get(l));
                 for (int k=0; k<newStates.size(); k++) {
                     foundInClosed=false;
                     for (int l=0; l<closed.size() && !foundInClosed; l++) {
-                        if (newStates.get(k).isEqual(closed.get(l)))
+                        if (newStates.get(k).isEqual(closed.get(l))){
                             foundInClosed=true;
+                        }
                     }
                     if (!foundInClosed) {
                         open.add(newStates.get(k));
@@ -153,11 +147,15 @@ public class Puzzle {
                 }
                 newStates.clear();
             }
+            numberOfMoves=currentState.getG();
+            if(numberOfMoves>previousNumMoves) {
+                System.out.println("Depth: "+numberOfMoves);
+                previousNumMoves=numberOfMoves;
+            }
             closed.add(new Matrix(currentState));
-            rounds++;
-            // String input=scanner.nextLine();
-            // if (input.equals("s"))
-            //     break;
+        }
+        if (numberOfMoves>33) {
+            System.out.println("Unsolvable");
         }
     }
 
@@ -167,10 +165,10 @@ public class Puzzle {
         while (check!=null) {
             shortestPath.add(check);
             check=check.getParent();
-            System.out.println(check);
+            // System.out.println(check);
         }
-        for (int i=shortestPath.size(); i>=0; i--) {
-            System.out.println(shortestPath.get(i));
+        for (int i=shortestPath.size()-1; i>=0; i--) {
+            System.out.println(shortestPath.get(i));   
         }
     }
 }
@@ -337,6 +335,7 @@ class Matrix {
     		else
     			out.nodes[i]=tempZero;
     	}
+        out.setG(old.getG());
         out.plusG();
     	return out;
     }
