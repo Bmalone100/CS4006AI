@@ -106,8 +106,9 @@ public class Puzzle {
         int min;
         ArrayList<Matrix> newStates=new ArrayList<Matrix>();
         int numberOfMoves=0;
+        int rounds=0;
         int previousNumMoves=0;
-        while (!finished && numberOfMoves<33) {
+        while (!finished && rounds<22000) {
             //find lowest f value in open
             min=10000;
             int remove=0;
@@ -149,12 +150,12 @@ public class Puzzle {
             }
             numberOfMoves=currentState.getG();
             if(numberOfMoves>previousNumMoves) {
-                System.out.println("Depth: "+numberOfMoves);
                 previousNumMoves=numberOfMoves;
             }
             closed.add(new Matrix(currentState));
+            rounds++;
         }
-        if (numberOfMoves>33) {
+        if (rounds>=22000) {
             System.out.println("Unsolvable");
         }
     }
