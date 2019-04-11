@@ -84,7 +84,6 @@ public class Puzzle {
     						    +  value[3] + " " + value[4] + " " +  value[5] + "\n"
     						    +  value[6] + " " + value[7] + " " +  value[8] + "\n"
     						    +  "0 moves made states are identical");
-    		System.exit(0);
     	} //program ends if states are identical ----------------------------------------------------------------------------------------------------------
         else{
             int i=0;
