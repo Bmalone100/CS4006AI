@@ -23,7 +23,10 @@ public class Puzzle {
         puzzleChoice = (String) JOptionPane.showInputDialog(null, "Choose a puzzle", "Menu", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
         if(puzzleChoice == null)
+        {
             JOptionPane.showMessageDialog(null, "Exiting");
+        	System.exit(0);
+        }
             else if(puzzleChoice.equals(options[0]))
             {
             	puzzleSize=8;
@@ -44,12 +47,14 @@ public class Puzzle {
         String endStateIn = "";
         
         boolean valid=false;
+        boolean loop = false;
+        while(!loop)// start of entire loop for inputs ------------------------------------------------------------------------------------------------------
+        {
         while (!valid) {
             startStateIn = JOptionPane.showInputDialog(null, "Input a starting puzzle state");
             if(startStateIn == null)
             {
-                JOptionPane.showMessageDialog(null, "Exiting");
-                System.exit(0);
+                menu(); // if cancel is pressed at start input stage go back to menu stage
             }
         	valid = eighPuzzleValidation(startStateIn);
         	if (!valid)
@@ -61,13 +66,24 @@ public class Puzzle {
             endStateIn = JOptionPane.showInputDialog(null, "Input an ending puzzle state");
             if(endStateIn == null)
             {
-                JOptionPane.showMessageDialog(null,"Exiting");
-                System.exit(0);
+                break; // end loop when cancel is pressed at endstate input stage, without break loop would be infinite
             }
         	valid=eighPuzzleValidation(endStateIn);
         	if (!valid)
         		JOptionPane.showMessageDialog(null, "ERROR:please input all numbers between 0-8 inclusive \nwithout duplicates");
+        	else
+        		loop = true;//Loop only ends if both inputs are valid or cancel is pressed --------------------------------------------------------------------
         }
+    }
+    	if(startStateIn.equals(endStateIn)) // When user inputs two identical states it will immediataly print out said state and end the program----------- 
+    	{
+    		String output [] = startStateIn.split(" ");
+    		System.out.println(    output[0] + " " + output[1] + " " +  output[2] + "\n"
+    						    +  output[3] + " " + output[4] + " " +  output[5] + "\n"
+    						    +  output[6] + " " + output[7] + " " +  output[8] + "\n"
+    						    +  "0 moves made states are identical");
+    		System.exit(0);
+    	} //program ends if states are identical ----------------------------------------------------------------------------------------------------------
         String value [] = startStateIn.split(" ");
         String endValue [] = endStateIn.split(" ");
         int i=0;
@@ -136,7 +152,7 @@ public class Puzzle {
             //check if the puzzle is solved
             if (currentState.isEqual(endState)) {
                 finished=true;
-                System.out.printf("done after %d moves.\nStart state:\n", numberOfMoves+1);
+                System.out.printf("done after %d move(s).\nStart state:\n", numberOfMoves+1);
                 finished();
             } else {
                 //find possible moves for current state
