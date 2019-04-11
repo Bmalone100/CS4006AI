@@ -16,22 +16,23 @@ public class Puzzle {
     static void menu()
     {
         String puzzleChoice="";
-        String pattern = "0123456789";
-        String startStateIn="";
-        String endStateIn="";
+        //String startStateIn="";
+        //String endStateIn="";
         String[] options = {"8 Puzzle", "15 Puzzle"};
 
-        puzzleChoice = JOptionPane.showInputDialog(null, "Choose a puzzle", "Menu", JOptionPane.PLAIN_MESSAGE, null, options, options[0]).toString();
+        puzzleChoice = (String) JOptionPane.showInputDialog(null, "Choose a puzzle", "Menu", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
-            if(puzzleChoice.equals(options[0]))
+        if(puzzleChoice == null)
+            JOptionPane.showMessageDialog(null, "Exiting");
+            else if(puzzleChoice.equals(options[0]))
             {
             	puzzleSize=8;
                 eightPuzzle();
             }
-            else
+            else if(puzzleChoice.equals(options[1]))
             {
                 //fifteenPuzzle();
-            }
+            } 
     }
 
     static void eightPuzzle()
@@ -41,17 +42,28 @@ public class Puzzle {
     	currentState=new Matrix(8);
         String startStateIn = "";
         String endStateIn = "";
-
+        
         boolean valid=false;
         while (!valid) {
-        	startStateIn = JOptionPane.showInputDialog(null, "Input a starting puzzle state");
+            startStateIn = JOptionPane.showInputDialog(null, "Input a starting puzzle state");
+            if(startStateIn == null)
+            {
+                JOptionPane.showMessageDialog(null, "Exiting");
+                System.exit(0);
+            }
         	valid = eighPuzzleValidation(startStateIn);
         	if (!valid)
-        		JOptionPane.showMessageDialog(null, "ERROR:please input all numbers between 0-8 inclusive \nwithout duplicates");
+                JOptionPane.showMessageDialog(null, "ERROR:please input all numbers between 0-8 inclusive \nwithout duplicates");
+            
         }
         valid=false;
         while (!valid) {
-        	endStateIn = JOptionPane.showInputDialog(null, "Input an ending puzzle state");
+            endStateIn = JOptionPane.showInputDialog(null, "Input an ending puzzle state");
+            if(endStateIn == null)
+            {
+                JOptionPane.showMessageDialog(null,"Exiting");
+                System.exit(0);
+            }
         	valid=eighPuzzleValidation(endStateIn);
         	if (!valid)
         		JOptionPane.showMessageDialog(null, "ERROR:please input all numbers between 0-8 inclusive \nwithout duplicates");
@@ -255,7 +267,7 @@ class Matrix {
     	return nodes[0];
     }
     public int findNode(int in) {
-    	boolean found=false;
+    	//boolean found=false;
     	for(int i=0; i<nodes.length; i++) {
     		if (in==nodes[i].getValue())
     			return i;
