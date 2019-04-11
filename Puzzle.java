@@ -75,27 +75,29 @@ public class Puzzle {
         		loop = true;//Loop only ends if both inputs are valid or cancel is pressed --------------------------------------------------------------------
         }
     }
+        String value [] = startStateIn.split(" ");
+        String endValue [] = endStateIn.split(" ");
     	if(startStateIn.equals(endStateIn)) // When user inputs two identical states it will immediataly print out said state and end the program----------- 
     	{
-    		String output [] = startStateIn.split(" ");
-    		System.out.println(    output[0] + " " + output[1] + " " +  output[2] + "\n"
-    						    +  output[3] + " " + output[4] + " " +  output[5] + "\n"
-    						    +  output[6] + " " + output[7] + " " +  output[8] + "\n"
+    		String value [] = startStateIn.split(" ");
+    		System.out.println(    value[0] + " " + value[1] + " " +  value[2] + "\n"
+    						    +  value[3] + " " + value[4] + " " +  value[5] + "\n"
+    						    +  value[6] + " " + value[7] + " " +  value[8] + "\n"
     						    +  "0 moves made states are identical");
     		System.exit(0);
     	} //program ends if states are identical ----------------------------------------------------------------------------------------------------------
-        String value [] = startStateIn.split(" ");
-        String endValue [] = endStateIn.split(" ");
-        int i=0;
-        for (int j=0; j<3; j++) {
-            for (int k=0;k<3;k++) {
-                startState.nodes[i]=new Node(Integer.parseInt(value[i]),j,k);
-                currentState.nodes[i]=new Node(Integer.parseInt(value[i]),j,k);
-                endState.nodes[i]=new Node(Integer.parseInt(endValue[i]),j,k);
-                i++;
+        else{
+            int i=0;
+            for (int j=0; j<3; j++) {
+                for (int k=0;k<3;k++) {
+                    startState.nodes[i]=new Node(Integer.parseInt(value[i]),j,k);
+                    currentState.nodes[i]=new Node(Integer.parseInt(value[i]),j,k);
+                    endState.nodes[i]=new Node(Integer.parseInt(endValue[i]),j,k);
+                    i++;
+                }
             }
+            aStar();
         }
-        aStar();
     }
     public static boolean eighPuzzleValidation(String in) {
 	    boolean isValid=true;
